@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU"
+            crossorigin="anonymous"
+    />
+    <title>Document</title>
+    <style>
+    body{
+        background-image: url('/coffee_project/images/09/peter-pivak-Iiqo64hiwZo-unsplash.jpg');
+        background-size: cover;
+        background-position: 50%;
+    }
+    .form-box{
+        width:500px;
+        height:600px;
+        position:relative;
+        top: 100px;
+        margin:2% auto;
+        background:rgba(255, 255, 255, 0.3);
+        padding:10px;
+        backdrop-filter: blur(5px);
+        border-radius: 20px;
+    }
+    .input-field{
+        width: 50%;
+        padding:10px 0;
+        margin:5px 0;
+        border-left:0;
+        border-top:0;
+        border-right:0;
+        border-bottom: 1px solid white;
+        outline:none;
+        background: transparent;
+    }
+    .form-row{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .form-title{
+        margin-right: 15px;
+    }
+    .buttonBox{
+        width:220px;
+        margin:35px auto;
+        position:relative;
+        border-radius: 30px;
+    }
+    .input-group-register{
+        display: none;
+        margin-top: 50px;
+        transition:.5s;
+    }
+    .toggle-btn{
+        padding:10px 30px;
+        cursor:pointer;
+        background:transparent;
+        border:0;
+        outline: none;
+        position: relative;
+    }
+    .input-group-login{
+        position:absolute;
+        top: 220px;
+	    width: 500px;
+	    transition: .5s;
+    }
+    .login-form{
+        text-align: center;
+        margin: auto;
+        margin-bottom: 50px;
+    }
+    .submit-btn{
+        width: 250px;
+        padding: 10px 30px;
+        cursor: pointer;
+        display: block;
+        margin: auto;
+        background: hsl(24, 100%, 86%);
+        border: 0;
+        outline: none;
+        border-radius: 30px;
+    }
+    .submit-btn:hover{
+        background: #B79973;
+        color: white;
+    }
+    .shuffle{
+        position: absolute;
+        bottom: 20px;
+        right: 50px;
+        font-size: .6rem;
+        border: 0;
+        margin: 0;
+        padding: 0;
+        cursor: pointer;
+        outline: none;
+        background: transparent;
+    }
+    .shuffle:hover{
+        color: white;
+    }
+    ::placeholder{
+        font-size: 0.8rem;
+        color: white;
+    }
+    </style>
+</head>
+<body>
+    <div class="navBar"></div>
+    <div id='login-form'class='login-page'>
+        <div class="form-box">
+            <form id='login' class='input-group-login'name="form1" onsubmit="sendLog();return false;" novalidate>
+                <div class="login-form">
+                    <input type='text' class='input-field' name="admin_account" placeholder='帳號' autocomplete="off" required >
+                    <input type='password'class='input-field' name="admin_password" placeholder='密碼' autocomplete="off" required>
+                </div>
+                <div>
+                    <button type='submit'class='submit-btn'>管理者登入</button>
+                </div>
+            </form>
+            <button class="shuffle">切換至一般用戶</button>
+        </div> 
+    </div>
+
+        
+
+<script>
+
+    async function sendLog() {
+        const fd = new FormData(document.form1);
+        await fetch("adm-login-api.php",{
+        method:'POST',
+        body:fd
+    })    
+        .then((r) => r.json())
+        .then((obj) => {
+        data = obj;
+    });
+
+    if(data.success){
+        window.location.href='user_list.php';
+    }else{
+        alert('帳號或密碼錯誤');
+    }
+
+    }
+
+    const shuffle = document.querySelector(".shuffle");
+    shuffle.addEventListener('click',()=>{
+        window.location.href='login.html';
+    })
+
+    // navbar
+    let PCBtnOpened = false;
+        const openMenu = () => {
+            document.querySelector(".navinner_pc").classList.add("is-open");
+        };
+        const closeMenu = () => {
+            document.querySelector(".navinner_pc").classList.remove("is-open");
+        };
+        const ShowMyPC = () => {
+            PCBtnOpened = !PCBtnOpened;
+            if (PCBtnOpened) {
+                openMenu();
+            } else {
+                closeMenu();
+            }
+        };
+        
+    function getNav() {
+                fetch("../../parts/navbar_admin.php")
+                    .then(function (r) {
+                        return r.text();
+                    })
+                    .then(function (navData) {
+                        console.log(navData);
+                        navBar = document.querySelector(".navBar");
+                        navBar.innerHTML = navData;
+                    });
+            }
+            getNav();
+    
+</script>
+
+</body>
+</html>

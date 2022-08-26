@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="fontawesome/css/all.css" />
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU"
+            crossorigin="anonymous"
+    />
+    <title>Document</title>
+    <style>
+    *{
+        box-sizing: border-box;
+    }
+    body{
+        background-image: url('/coffee_project/images/09/content-pixie-Xv0CHwbn6O8-unsplash.jpg');
+        background-size: cover;
+        background-position: 50%;
+    }
+    .form-box{
+        width:500px;
+        height:750px;
+        position:relative;
+        margin:3% auto;
+        background:rgba(255, 255, 255, 0.3);
+        padding:10px;
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+    }
+    .input-field{
+        width: 50%;
+        padding:10px 0;
+        margin-bottom:8px;
+        border-left:0;
+        border-top:0;
+        border-right:0;
+        border-bottom: 1px solid #999;
+        outline:none;
+        background: transparent;
+    }
+
+    .form_row{
+        position: relative;
+    }
+    .errorMsg{
+        margin: 0;
+        color: red;
+        font-size: .7rem;
+        position: relative;
+        top: -8px;
+        left: 31.5%;
+    }
+    .form_row>i{
+        position: absolute;
+        visibility: hidden;
+        top: 19px;
+        right: 90px;
+        font-size: .7rem;
+    }
+
+    .form_row.error i.fa-circle-exclamation {
+	color: red;
+	visibility: visible;
+    }
+
+    .f-input{
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .form-title{
+        margin-right: 15px;
+    }
+    .buttonBox{
+        width:220px;
+        margin:35px auto;
+        margin-bottom: 0;
+        position:relative;
+        border-radius: 30px;
+    }
+    .input-group-register{
+        display: none;
+        margin-top: 20px;
+        transition:.5s;
+    }
+    .toggle-btn{
+        padding:10px 30px;
+        cursor:pointer;
+        background:transparent;
+        border:0;
+        outline: none;
+        position: relative;
+    }
+    .input-group-login{
+        position:absolute;
+        top: 250px;
+	    width: 500px;
+	    transition: .5s;
+    }
+    .login-form{
+        position: relative;
+        text-align: center;
+        margin: auto;
+        margin-bottom: 50px;
+    }
+    .submit-btn{
+        width: 250px;
+        padding: 10px 30px;
+        cursor: pointer;
+        display: block;
+        margin: auto;
+        background: hsl(24, 100%, 86%);
+        border: 0;
+        outline: none;
+        border-radius: 30px;
+    }
+    .submit-btn:hover{
+        background: #B79973;
+        color: white;
+    }
+    .re-btn{
+        width: 280px;
+        padding: 10px 30px;
+        cursor: pointer;
+        display: block;
+        margin: auto;
+        position: relative;
+        top: 40px;
+        background: hsl(24, 100%, 86%);
+        border: 0;
+        outline: none;
+        border-radius: 30px;
+    }
+    .re-btn:hover{
+        background: #B79973;
+        color: white;
+    }
+    .btn{
+        position: absolute;
+        top: 2px;
+        left:0;
+        width: 90px;
+        height: 38px;
+        background: hsl(24, 100%, 86%);
+        border-radius: 30px;
+        transition: .65s;
+    } 
+    .btn-right{
+        transform: translateX(100%);
+    }
+
+    .shuffle{
+        position: absolute;
+        bottom: -250px;
+        right: 50px;
+        font-size: .6rem;
+        border: 0;
+        margin: 0;
+        padding: 0;
+        cursor: pointer;
+        outline: none;
+        background: transparent;
+    }
+    .shuffle:hover{
+        color: white;
+    }
+    ::placeholder{
+        font-size: 0.8rem;
+    }
+    #eye{
+        position: absolute;
+        top: 65px;
+        right: 125px;
+    }
+
+
+    </style>
+
+</head>
+<body>
+    <div class="navBar"></div>
+    <div id='login-form'class='login-page'>
+        <div class="form-box">
+            <div class='buttonBox'>
+                <div class="btn"></div>
+                <button type='button'onclick='loginclick()'class='toggle-btn'>登入</button>
+                <button type='button'onclick='registerclick()'class='toggle-btn'>註冊</button>
+            </div>
+
+        <form id='login' class='input-group-login'name="form2" onsubmit="sendLog();return false;" novalidate>
+            <div class="login-form">
+                <input type='text' class='input-field' name="member_account" placeholder='帳號' autocomplete="off" required >
+                <input type='password'class='input-field' id="loginPW" name="member_password" placeholder='密碼' autocomplete="off" required>
+                <span id="eye" class="fa-solid fa-eye-slash"></span>
+            </div>
+            <div>
+                <button type='submit'class='submit-btn'>登入</button>
+                <p class="formText"></p>
+            </div>
+            <button class="shuffle" type="button">切換至管理者登入</button>
+        </form>
+
+        <form id='register' class='input-group-register' name="form1" onsubmit="sendData();return false;" novalidate>
+            <div class="form_row">
+                <div class="f-input">
+                    <div class="form-title">姓名：</div>
+                    <input type='text'class='input-field' id="member_name" name="member_name" placeholder='姓名' autocomplete="off" required>
+                </div>
+                <!-- <i class="fa-solid fa-circle-check"></i> -->
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <p class="errorMsg"></p>
+            </div>
+            <div class="form_row">
+                <div class="f-input">
+                    <div class="form-title">暱稱：</div>
+                    <input type='text'class='input-field' id="member_nickname" name="member_nickname" placeholder='暱稱' autocomplete="off" required>
+                </div>
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <p class="errorMsg"></p>
+            </div>
+            <div class="form_row">
+                <div class="f-input">
+                    <div class="form-title">帳號：</div>
+                    <input type='text'class='input-field' id="member_account" name="member_account" placeholder='帳號' autocomplete="off" required>
+                </div>
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <p class="errorMsg"></p>
+            </div>
+            <div class="form_row">
+                <div class="f-input">
+                    <div class="form-title">密碼：</div>
+                    <input type='password'class='input-field' id="member_password" name="member_password" placeholder='密碼' autocomplete="off" required>
+                </div>
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <p class="errorMsg"></p>
+            </div>
+            <div class="form_row">
+                <div class="f-input">
+                    <div class="form-title">生日：</div>
+                    <input type="date" class= 'input-field' id="member_birthday" name="member_birthday" autocomplete="off">      
+                </div>
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <p class="errorMsg"></p>
+            </div>
+            <div class="form_row">
+                <div class="f-input">
+                    <div class="form-title">手機：</div>
+                    <input type='text'class='input-field' id="member_mobile" name="member_mobile" placeholder='手機號碼' autocomplete="off" required>
+                </div>
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <p class="errorMsg"></p>
+            </div>
+            <div class="form_row">
+                <div class="f-input">
+                    <div class="form-title">地址：</div>
+                    <input type='text'class='input-field' id="member_address" name="member_address" placeholder='地址' autocomplete="off" required>
+                </div>
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <p class="errorMsg"></p>
+            </div>
+            <div class="form_row">
+                <div class="f-input">
+                    <div class="form-title">信箱：</div>
+                    <input type='email'class='input-field' id="member_mail" name="member_mail" placeholder='信箱' autocomplete="off" required>
+                </div>
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <p class="errorMsg"></p>
+            </div>
+            <button type='submit'class='re-btn'>確認註冊</button>
+        </form>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    // 密碼眼睛開關
+    const loginPW = document.getElementById('loginPW');
+    const eye = document.getElementById('eye');
+    let eyeOpen = 1;
+    
+    eye.onclick = function(){
+        if( eyeOpen == 1){
+            loginPW.type = 'text';
+            eye.className = "fa-solid fa-eye";
+            eyeOpen = 0;       
+    }else{
+        console.log('close');
+        loginPW.type = 'password';
+        eye.className = "fa-solid fa-eye-slash";
+        eyeOpen = 1; 
+    }
+}
+
+    // 登入註冊切換
+    const login = document.getElementById('login');
+    const register = document.getElementById('register');
+    const button = document.querySelector('.btn');
+    const formText = document.querySelector(".formText");
+    const shuffle = document.querySelector(".shuffle");
+
+    function loginclick(){
+        login.style.display = "block";
+        register.style.display = "none";
+        button.classList.remove("btn-right");
+    }
+
+    function registerclick(){
+        login.style.display = "none";
+        register.style.display = "block";
+        button.classList.add("btn-right");
+    }
+
+    shuffle.addEventListener('click',()=>{
+        window.location.href='admin-login.html';
+    })
+
+    const errorMsg = document.querySelectorAll('.errorMsg');
+    const form_row = document.querySelectorAll('.form_row');
+
+    const mail_re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zAZ]{2,}))$/;
+    const mobile_re = /^09\d{2}-?\d{3}-?\d{3}$/;
+
+    const name_f = document.form1.member_name;
+    const nickname_f = document.form1.member_nickname;
+    const account_f = document.form1.member_account;
+    const password_f = document.form1.member_password;
+    const mobile_f = document.form1.member_mobile;
+    const address_f = document.form1.member_address;
+    const mail_f = document.form1.member_mail;
+
+
+
+    async function sendData() {
+
+        // 前端欄位檢查
+        let isPass = true;
+
+        if (name_f.value.length < 2) {
+            errorMsg[0].style.visibility = 'visible';
+            errorMsg[0].innerText = '姓名至少兩個字';
+            form_row[0].className = 'form_row error';
+            isPass = false;
+        }else{
+            errorMsg[0].innerHTML = '';
+            form_row[0].classList.remove("error");
+        }
+        if (nickname_f.value.length < 1) {
+            errorMsg[1].style.visibility = 'visible';
+            errorMsg[1].innerHTML = '請輸入您的暱稱';
+            form_row[1].className = 'form_row error';
+            isPass = false;
+        }else{
+            errorMsg[1].innerHTML = '';
+            form_row[1].classList.remove("error");
+        }
+        if (nickname_f.value.length < 1) {
+            errorMsg[2].style.visibility = 'visible';
+            errorMsg[2].innerHTML = '請輸入您的帳號';
+            form_row[2].className = 'form_row error';
+            isPass = false;
+        }else{
+            errorMsg[2].innerHTML = '';
+            form_row[2].classList.remove("error");
+        }
+        if (nickname_f.value.length < 1) {
+            errorMsg[3].style.visibility = 'visible';
+            errorMsg[3].innerHTML = '請輸入您的密碼';
+            form_row[3].className = 'form_row error';
+            isPass = false;
+        }else{
+            errorMsg[3].innerHTML = '';
+            form_row[3].classList.remove("error");
+        }
+        if (mobile_f.value && !mobile_re.test(mobile_f.value)) {
+            errorMsg[5].innerHTML = '手機號碼格式錯誤';
+            form_row[5].className = 'form_row error';
+            isPass = false;
+        }else{
+            errorMsg[5].innerHTML = '';
+            form_row[5].classList.remove("error");
+        }
+        if (address_f.value.length < 1) {
+            errorMsg[6].innerHTML = '請輸入您的地址';
+            form_row[6].className = 'form_row error';
+            isPass = false;
+        }else{
+            errorMsg[6].innerHTML = '';
+            form_row[6].classList.remove("error");
+        }
+        if (mail_f.value && !mail_re.test(mail_f.value)) {
+            errorMsg[7].innerHTML = '信箱格式錯誤';
+            form_row[7].className = 'form_row error';
+            isPass = false;
+        }else{
+            errorMsg[7].innerHTML = '';
+            form_row[7].classList.remove("error");
+        }
+
+        if (!isPass) {
+            return; // 結束函式
+        }
+
+        const fd = new FormData(document.form1);
+        await fetch("register-api.php",{
+        method:'POST',
+        body:fd
+    })
+        .then((r) => r.json())
+        .then((obj) => {
+        data = obj;
+        
+        if(data.success){
+        alert("會員註冊成功！");       
+        window.location.href='/coffee_project/index_.php';
+    }else{
+        alert('已有此帳號');
+    }
+
+    });
+
+    }
+
+    async function sendLog() {
+        const fd = new FormData(document.form2);
+        await fetch("login-api.php",{
+        method:'POST',
+        body:fd
+    })    
+
+        .then((r) => r.json())
+        .then((obj) => {
+        data = obj;
+
+        console.log(obj);
+
+    if(data.success){
+        window.location.href='welcome.php';
+
+    }else{
+        alert('帳號或密碼錯誤');
+    }
+
+
+    });
+
+    }
+
+    // navbar
+    let PCBtnOpened = false;
+        const openMenu = () => {
+            document.querySelector(".navinner_pc").classList.add("is-open");
+        };
+        const closeMenu = () => {
+            document.querySelector(".navinner_pc").classList.remove("is-open");
+        };
+        const ShowMyPC = () => {
+            PCBtnOpened = !PCBtnOpened;
+            if (PCBtnOpened) {
+                openMenu();
+            } else {
+                closeMenu();
+            }
+        };
+        
+    function checkQuantity() {
+        const cart_quantity = document.querySelector("[data-content-before]");
+        const myHref = window.location.href.replace(/coffee_project.*/, "coffee_project/parts/read_quantity_api.php");
+        fetch(myHref)
+            .then(data => data.json())
+            .then(data => {
+                cart_quantity.setAttribute("data-content-before", data.food.length + data.product.length);
+            })
+            .catch(() => {
+                cart_quantity.setAttribute("data-content-before", 0);
+            })
+    };
+
+    function getNav() {
+                fetch("../../parts/navbar.php")
+                    .then(function (r) {
+                        return r.text();
+                    })
+                    .then(function (navData) {
+                        console.log(navData);
+                        navBar = document.querySelector(".navBar");
+                        navBar.innerHTML = navData;
+                        checkQuantity();
+                    });
+            }
+            getNav();
+    
+
+</script>
+
+</body>
+</html>

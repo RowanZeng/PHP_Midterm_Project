@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU"
+            crossorigin="anonymous"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+        />
+
+        <title>來拎+B</title>
+        <style class="style">
+            * {
+                box-sizing: border-box;
+            }
+            body {
+                background: url(../../images/29/03-bgimg.jpg) no-repeat;
+                background-size: cover;
+                background-attachment: fixed;
+            }
+            .bgcimg {
+                background-color: rgba(255, 255, 255, 0.3);
+                min-height: 100vh;
+            }
+
+            .card {
+                width: 280px;
+                height: 350px;
+                border: 1px solid #333;
+                margin: 20px 20px;
+                text-align: center;
+                border-radius: 10px;
+                -webkit-transition: all 250ms cubic-bezier(0.02, 0.01, 0.47, 1);
+                transition: all 250ms cubic-bezier(0.02, 0.01, 0.47, 1);
+            }
+
+            .card:hover {
+                box-shadow: 0 16px 32px 0 rgba(48, 55, 66, 0.15);
+                transform: translate(0, -5px);
+                transition-delay: 0s;
+                box-shadow: 1px 1px 8px 1px #333;
+            }
+
+            .wrap {
+                display: flex;
+                flex-wrap: wrap;
+                width: 980px;
+                margin: auto;
+            }
+            .pic > img {
+                width: 100%;
+                height: 100%;
+                border-radius: 10px 10px 0 0;
+            }
+            .pic {
+                text-align: center;
+                border-bottom: 1px solid #333;
+                width: 100%;
+                height: 180px;
+            }
+
+            .level {
+                position: absolute;
+                border: 1px solid #333;
+
+                border-radius: 10px 0 10px 0;
+            }
+            h3 {
+                margin: 15px;
+            }
+            .card-txt {
+                margin: 0 0 15px 0;
+            }
+
+            .pageBtn {
+                padding: 3px 12px;
+                background-color: #fff;
+                margin: 25px 10px 25px 0;
+                border-radius: 5px;
+            }
+            .pageBtn:hover {
+                background-color: rgb(210, 173, 133);
+            }
+
+            .inputs {
+                text-align: center;
+            }
+
+            .search {
+                border: 2px solid rgb(136, 88, 36);
+                border-radius: 5px;
+                outline: none;
+                position: absolute;
+                left: 191px;
+                top: 30px;
+            }
+
+            .fa-magnifying-glass {
+                transform: translateX(-25px);
+                color: rgb(136, 88, 36);
+                position: absolute;
+                left: 375px;
+                top: 36px;
+            }
+            #sort {
+                border: 1px solid rgb(210, 173, 133);
+                border-radius: 5px;
+                padding: 6px 12px;
+                text-align: center;
+                color: rgb(136, 88, 36);
+                outline: none;
+                position: absolute;
+                right: 215px;
+                top: 25px;
+            }
+            .container {
+                position: relative;
+                margin-top: 50px;
+            }
+            .titleH2 {
+                position: absolute;
+                top: -30px;
+                left: 190px;
+                color: rgb(136, 88, 36);
+            }
+        </style>
+    </head>
+    <body>
+        <script>
+            let PCBtnOpened = false;
+
+            const openMenu = () => {
+                document.querySelector(".navinner_pc").classList.add("is-open");
+            };
+            const closeMenu = () => {
+                document
+                    .querySelector(".navinner_pc")
+                    .classList.remove("is-open");
+            };
+
+            const ShowMyPC = () => {
+                PCBtnOpened = !PCBtnOpened;
+                if (PCBtnOpened) {
+                    openMenu();
+                } else {
+                    closeMenu();
+                }
+            };
+            function checkQuantity() {
+                const cart_quantity = document.querySelector(
+                    "[data-content-before]"
+                );
+                const myHref = window.location.href.replace(
+                    /coffee_project.*/,
+                    "coffee_project/parts/read_quantity_api.php"
+                );
+                fetch(myHref)
+                    .then((data) => data.json())
+                    .then((data) => {
+                        cart_quantity.setAttribute(
+                            "data-content-before",
+                            data.food.length + data.product.length
+                        );
+                    })
+                    .catch(() => {
+                        cart_quantity.setAttribute("data-content-before", 0);
+                    });
+            }
+
+            function getNav() {
+                fetch("../../parts/navbar.php")
+                    .then(function (response) {
+                        return response.text();
+                    })
+                    .then(function (navData) {
+                        navBar = document.querySelector(".navBar");
+                        navBar.innerHTML = navData;
+                        checkQuantity();
+                    });
+            }
+            getNav();
+        </script>
+        <div class="bgcimg">
+            <div class="navBar"></div>
+            <!-- <button><a href="delete-data.html">登入</a></button> -->
+            <div class="container">
+                <h2 class="titleH2">課程資訊</h2>
+                <input type="text" placeholder="" class="search" /><i
+                    class="fa-solid fa-magnifying-glass"
+                ></i>
+                <select name="" id="sort">
+                    <option value="">--排序--</option>
+                    <option value="priceAsc">價格低至高</option>
+                    <option value="priceDesc">價格高至低</option>
+                    <option value="levelAsc">難度低至高</option>
+                    <option value="levelDesc">難度高至低</option>
+                </select>
+            </div>
+            <div class="inputs"></div>
+            <div class="wrap">
+                <!-- <div class="card">
+                    <div class="pic">
+                        <div class="level">1</div>
+                        <img src="images/heart.png" alt="" />
+                    </div>
+                    <h3>name</h3>
+                    <p>nt</p>
+                    <p>txt</p>
+                </div> -->
+            </div>
+        </div>
+
+        <script>
+            const url = "./class-index-api.php";
+            const wrap = document.querySelector(".wrap");
+            const style = document.querySelector(".style");
+            const search = document.querySelector(".search");
+            const sort = document.querySelector("#sort");
+            const inputs = document.querySelector(".inputs");
+            const len = 9; //控制一頁筆幾
+            let choose = 0; //建立一個全域性變數用來儲存當前處於第幾個頁面
+
+            function priceAsc(a, b) {
+                return a.course_price - b.course_price;
+            }
+            function priceDesc(a, b) {
+                return b.course_price - a.course_price;
+            }
+            function levelAsc(a, b) {
+                return a.course_level - b.course_level;
+            }
+            function levelDesc(a, b) {
+                return b.course_level - a.course_level;
+            }
+
+            function getData() {
+                fetch(url)
+                    .then(function (response) {
+                        return response.json();
+                    })
+                    .then(function (data) {
+                        localStorage.setItem("data", JSON.stringify(data));
+
+                        search.addEventListener("input", () => {
+                            if (search.value === "") {
+                                style.innerHTML +=
+                                    '.card:not([data-index*="' +
+                                    search.value +
+                                    '"]){display:block;}';
+                            }
+                            data.forEach(function (v, i) {
+                                ar2 = data[i].course_name.split("");
+
+                                ar2.forEach(function (v, i) {
+                                    if (search.value === ar2[i])
+                                        style.innerHTML +=
+                                            '.card:not([data-index*="' +
+                                            search.value +
+                                            '"]){display:none;}';
+                                });
+                            });
+                        });
+                    });
+            }
+            getData();
+
+            // 分頁
+            dataCopy = JSON.parse(localStorage.getItem("data"));
+
+            sort.addEventListener("change", function () {
+                if (sort.value === "priceAsc") {
+                    dataCopy.sort(priceAsc);
+                } else if (sort.value === "priceDesc") {
+                    dataCopy.sort(priceDesc);
+                } else if (sort.value === "levelAsc") {
+                    dataCopy.sort(levelAsc);
+                } else if (sort.value === "levelDesc") {
+                    dataCopy.sort(levelDesc);
+                }
+
+                tablestr(choose);
+                levelfun(choose);
+            });
+            //分頁按鈕生成
+            function limits() {
+                countLim = Math.ceil(dataCopy.length / len); //總頁數
+                //餘數算一頁向上取整
+
+                inputs.innerHTML = "";
+                for (let i = 1; i <= countLim; i++) {
+                    inputs.innerHTML += `<input type="button" value="${i}" onclick="limitinput(this)" class="pageBtn">`; //每個頁面按鈕都繫結上一個點擊事件,this綁定點擊的元素
+                }
+            }
+            limits();
+
+            function tablestr(num) {
+                //num是指當前哪個頁面
+
+                let num1 = (num - 1) * len; //確定迴圈開始的集合下標  1的時候=0 ,2的時候=3 ,8的時候=21
+
+                let num2 = num * len; //確定迴圈結束的結束下標  1的時候 = 3 ,2的時候=6 ,8的時候=24
+
+                wrap.innerHTML = ""; //清空一下
+
+                for (let i = num1; i < num2; i++) {
+                    //遍歷陣列
+                    if (i >= dataCopy.length) {
+                        i = dataCopy.length;
+                        return;
+                    }
+                    str = "";
+
+                    str += `<div class="pic">
+                    <div class="level">${dataCopy[i].course_level}</div>
+                    <img src="../../images/29/${dataCopy[i].course_img_s}" alt="" />
+                </div>
+                <h3>${dataCopy[i].course_name}</h3>
+                <p class="card-txt">${dataCopy[i].course_content}</p>
+                <p class="card-txt">NT$${dataCopy[i].course_price}</p>`;
+
+                    wrap.innerHTML += `<div class="card" data-index="${dataCopy[i].course_name}">  ${str}  </div>`; //每迴圈一次新增一條資料
+                }
+            }
+            tablestr(1); // 初始第一頁
+            choose = 1;
+            function liminputcolor(choose) {
+                // 這裡childNodes把inputs子節點集合起來索引值0開始,所以-1
+                inputs.childNodes[choose - 1].style.backgroundColor = "#a2642e";
+            }
+            inputs.childNodes[0].style.backgroundColor = "#a2642e"; //第一個按鈕的背景顏色
+
+            function levelfun(choose) {
+                for (let i = 0; i <= dataCopy.length; i++) {
+                    level = document.querySelectorAll(".level");
+                    // 帶頁數的值進來 -1 * 上一頁幾筆資料 (假設頁數值為2,2-1*len(9) = 9,就是從第9筆開始)
+                    if (dataCopy[i + (choose - 1) * len].course_level == "1") {
+                        level[i].innerHTML = "入門";
+                        level[i].style.backgroundColor = "rgb(210, 173, 133)";
+                    }
+                    if (dataCopy[i + (choose - 1) * len].course_level == "2") {
+                        level[i].innerHTML = "中級";
+                        level[i].style.backgroundColor = "rgb(206, 152, 94)";
+                    }
+                    if (dataCopy[i + (choose - 1) * len].course_level == "3") {
+                        level[i].innerHTML = "高級";
+                        level[i].style.backgroundColor = "#a2642e";
+                    }
+                }
+            }
+            levelfun(choose);
+
+            function limitinput(i) {
+                //監聽事件的this會把點擊當下的value帶進來,用來改變現在點擊的CSS,跟渲染當頁資料
+                choose = i.value;
+                tablestr(choose); //重新整理table資料
+                limits(); //重新整理頁面按鈕
+                liminputcolor(choose); //頁面按鈕變色
+                levelfun(choose);
+            }
+        </script>
+    </body>
+</html>

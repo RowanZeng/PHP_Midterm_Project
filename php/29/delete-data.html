@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU"
+            crossorigin="anonymous"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+        />
+
+        <title>來拎+B</title>
+        <style class="style"></style>
+        <style>
+            body {
+                background-color: #caad87;
+                opacity: 0.9;
+            }
+            .pic > img {
+                width: 100px;
+                height: 100px;
+            }
+            .wrap {
+                line-height: 100px;
+            }
+
+            .fa-trash-can:hover {
+                color: rgb(210, 173, 133);
+            }
+            .fa-pen-to-square:hover {
+                color: rgb(210, 173, 133);
+            }
+            td > a {
+                color: #333;
+            }
+            .container {
+                position: relative;
+                background-color: #eee;
+                border-radius: 20px 20px 0 0;
+                padding: 0;
+            }
+            .btn {
+                padding: 0;
+                position: absolute;
+                right: 15px;
+                top: -95px;
+                border: 1px solid rgb(136, 88, 36);
+                background-color: rgb(136, 88, 36);
+            }
+            .btn > a {
+                text-decoration: none;
+                color: #eee;
+                display: inline-block;
+                padding: 6px 30px;
+            }
+            .btn:hover > a {
+                background: linear-gradient(
+                    135deg,
+                    rgb(177, 255, 170) 0%,
+                    rgb(17, 182, 17) 100%
+                );
+                border: 1px solid rgb(177, 255, 170);
+                animation: btnG 1s 0s infinite linear;
+                border-radius: 3px;
+                color: #333;
+            }
+
+            @keyframes btnG {
+                0% {
+                    background: linear-gradient(
+                        135deg,
+                        rgb(177, 255, 170) 20%,
+                        rgb(17, 182, 17) 80%
+                    );
+                }
+                100% {
+                    background: linear-gradient(
+                        135deg,
+                        rgb(177, 255, 170) 40%,
+                        rgb(17, 182, 17) 60%
+                    );
+                }
+            }
+            .search {
+                border: 2px solid rgb(136, 88, 36);
+                border-radius: 5px;
+                outline: none;
+                position: absolute;
+                top: -40px;
+            }
+            .fa-magnifying-glass {
+                position: absolute;
+                color: rgb(136, 88, 36);
+                top: -34px;
+                left: 160px;
+            }
+            .table {
+                margin-top: 105px;
+            }
+
+            #sort {
+                position: absolute;
+                right: 14px;
+                top: -45px;
+                border: 1px solid rgb(210, 173, 133);
+                border-radius: 5px;
+                padding: 6px 12px;
+                text-align: center;
+                color: rgb(136, 88, 36);
+                outline: none;
+            }
+            .titleH2 {
+                position: absolute;
+                top: -100px;
+                color: rgb(136, 88, 36);
+            }
+        </style>
+    </head>
+    <body>
+        <script>
+            let PCBtnOpened = false;
+
+            const openMenu = () => {
+                document.querySelector(".navinner_pc").classList.add("is-open");
+            };
+            const closeMenu = () => {
+                document
+                    .querySelector(".navinner_pc")
+                    .classList.remove("is-open");
+            };
+
+            const ShowMyPC = () => {
+                PCBtnOpened = !PCBtnOpened;
+                if (PCBtnOpened) {
+                    openMenu();
+                } else {
+                    closeMenu();
+                }
+            };
+            function getNav() {
+                fetch("../../parts/navbar_admin.php")
+                    .then(function (response) {
+                        return response.text();
+                    })
+                    .then(function (navData) {
+                        navBar = document.querySelector(".navBar");
+                        navBar.innerHTML = navData;
+                    });
+            }
+            getNav();
+        </script>
+
+        <div class="navBar"></div>
+
+        <!-- <button style="transform: translateX(1200px)">
+            <a href="class-index.html">登出</a>
+        </button> -->
+        <div class="container">
+            <h2 class="titleH2">課程管理</h2>
+            <input type="text" placeholder="" class="search" /><i
+                class="fa-solid fa-magnifying-glass"
+            ></i>
+            <button type="button" class="btn btn-outline-success">
+                <a href="./add-data.html"> 新增課程</a>
+            </button>
+            <select name="" id="sort">
+                <option value="">--排序--</option>
+                <option value="priceAsc">價格低至高</option>
+                <option value="priceDesc">價格高至低</option>
+                <option value="levelAsc">難度低至高</option>
+                <option value="levelDesc">難度高至低</option>
+            </select>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">課程編號</th>
+                        <th scope="col">課程照片</th>
+                        <th scope="col">課程名稱</th>
+                        <th scope="col">課程難度</th>
+                        <th scope="col">課程價格</th>
+                        <th scope="col">修改</th>
+                        <th scope="col">刪除</th>
+                    </tr>
+                </thead>
+                <tbody class="wrap">
+                    <!-- <tr>
+                            <td scope="row" class="pic">
+                                <img src="images/heart.png" alt="" />
+                            </td>
+                            <td>Mark</td>
+                            <td>Otto</td>
+                            <td>NT$</td>
+                            <td><i class="fa-solid fa-trash-can"></i></td>
+                        </tr> -->
+                </tbody>
+            </table>
+        </div>
+
+        <script src="./delete-data.js"></script>
+    </body>
+</html>

@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分享牆</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+
+    <link rel="stylesheet" href="css/share_style.css">
+
+    <style>
+        body {
+            width: calc(90vw-10px);
+            margin: 0 auto;
+            /* overflow-x: hidden; */
+        }
+
+
+        .loading {
+            position: fixed;
+            z-index: 999;
+            height: 4em;
+            width: 4em;
+            overflow: visible;
+            margin: auto;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+        }
+
+        /* Transparent Overlay */
+        .loading:before {
+            content: '';
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* background-color: rgba(0, 0, 0, 0.15); */
+        }
+
+        /* :not(:required) hides these rules from IE9 and below */
+        .loading:not(:required) {
+            /* hide "loading..." text */
+            font: 0/0 a;
+            color: transparent;
+            text-shadow: none;
+            background-color: transparent;
+            border: 0;
+        }
+
+        .loading:not(:required):after {
+            content: '';
+            display: block;
+            font-size: 10px;
+            width: .8em;
+            height: .8em;
+            margin-top: -0.5em;
+
+            animation: spinner 1600ms infinite linear;
+            border-radius: 0.5em;
+
+            box-shadow: rgba(0, 0, 0, 0.75) 1.5em 0 0 0, rgba(0, 0, 0, 0.75) 1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) 0 1.5em 0 0, rgba(0, 0, 0, 0.75) -1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) -1.5em 0 0 0, rgba(0, 0, 0, 0.75) -1.1em -1.1em 0 0, rgba(0, 0, 0, 0.75) 0 -1.5em 0 0, rgba(0, 0, 0, 0.75) 1.1em -1.1em 0 0;
+        }
+
+        /* Animation */
+        @keyframes spinner {
+            0% {
+                -webkit-transform: rotate(0deg);
+                -moz-transform: rotate(0deg);
+                -ms-transform: rotate(0deg);
+                -o-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+
+            100% {
+                -webkit-transform: rotate(360deg);
+                -moz-transform: rotate(360deg);
+                -ms-transform: rotate(360deg);
+                -o-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+
+        .wrapper {
+            width: 90vw;
+            margin: 20px auto 0;
+            opacity: 0;
+            transition: opacity .4s;
+
+
+        }
+
+        #photos__container {
+
+            position: relative;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+
+        }
+
+
+        .photo {
+            width: 320px;
+
+            height: auto;
+
+            position: absolute;
+            border-radius: 15px;
+            box-shadow: 0 0 10px 0 rgb(0 0 0 / 30%);
+            overflow: hidden;
+
+            cursor: pointer;
+        }
+
+
+
+
+        .photo img {
+            width: 100%;
+            min-height: 200px;
+            max-height: 500px;
+            display: block;
+
+        }
+
+        .cover {
+            position: absolute;
+            color: blue;
+            font-weight: bold;
+            bottom: 0;
+            left: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgb(0, 0, 0);
+        }
+
+        .photo:hover .cover {
+            opacity: .3;
+        }
+
+        .photo:hover .fa-heart {
+            opacity: 1;
+        }
+
+
+        .fig-box {
+            position: absolute;
+            display: flex;
+            flex-wrap: wrap;
+            bottom: 6px;
+            left: 0;
+
+            padding: 8px 12px;
+            color: rgb(17, 17, 17);
+            width: 100%;
+            /* transform: translateY(25%); */
+            justify-content: space-between;
+        }
+
+        .tags-box {
+            width: 100%;
+        }
+
+        .fig {
+            background-color: rgb(220, 220, 220);
+            border-radius: 20px;
+            padding: 4px 10px 4px 12px;
+            max-width: 35%;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            font-size: 16px;
+            font-weight: 600;
+            opacity: 0;
+        }
+
+        .fig-tags {
+            background-color: rgba(190, 211, 227, 0.84);
+            border-radius: 20px;
+            padding: 2px 10px 2px 8px;
+            max-width: 25%;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            font-size: 13px;
+            margin-right: 5px;
+        }
+
+        .fig-title {
+            max-width: 60%;
+
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+
+        }
+
+        .fig-member:hover {
+            background-color: rgb(255, 255, 255);
+        }
+
+        .photo:hover .fig {
+            opacity: 1;
+        }
+
+
+        .fa-heart {
+
+            color: rgb(255, 255, 255);
+            font-size: 18px;
+            padding-left: 5px;
+            display: flex;
+            position: absolute;
+            top: 14px;
+            right: 14px;
+
+            line-height: 20px;
+
+            cursor: pointer;
+            opacity: 1;
+            background-color: rgb(246, 41, 41);
+            padding: 8px 14px 8px 16px;
+
+            border-radius: 20px;
+
+            opacity: 0;
+        }
+
+        .heart_red {
+            color: rgb(251, 146, 123);
+        }
+
+        .fa-heart:hover {
+            background-color: rgb(207, 17, 17);
+        }
+
+        .had_like {
+            background-color: rgb(207, 17, 17);
+        }
+
+        .likes {
+            padding-left: 6px;
+            /* outline: 1px solid blue; */
+
+            font-size: 14px;
+            letter-spacing: 1.5px;
+        }
+
+        .title {
+            width: 100%;
+            display: flex;
+            color: rgb(136, 88, 36);
+            position: relative;
+            top: 0;
+            z-index: 999;
+            align-items: center;
+        }
+
+        .title a {
+            color: rgb(136, 88, 36);
+        }
+
+
+        .search_col {
+            top: 2px;
+            left: 120px;
+            width: 250px;
+            position: absolute;
+            margin-left: .25rem;
+            border-radius: 4px;
+            background-color: #fff;
+            overflow: hidden;
+            box-shadow: 2px 2px 6px 3px #d5d5d571;
+
+        }
+
+
+
+        .s_col {
+            background-color: #fff;
+            padding: 6px 12px 6px 18px;
+            position: relative;
+        }
+
+        .s_col a {
+            display: block;
+        }
+
+        .s_col::before {
+            display: block;
+            content: '#';
+            position: absolute;
+            left: 6px;
+            font-weight: 900;
+
+        }
+
+        .s_col:hover {
+            background-color: #bfbfbf;
+
+        }
+
+        .search-wrap {
+            display: flex;
+            width: 450px;
+        }
+
+        .pop-tags {
+            bottom: 0;
+            position: absolute;
+            left: 400px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="l-wrap">
+        <div class="loading">Loading&#8230;</div>
+    </div>
+
+    <div class="wrapper">
+        <div class="title mb-3">
+            <h2 class="mr-3"><a href="share.html">分享牆</a></h2>
+            <div class="search-wrap">
+
+                <div class="search_col">
+                    <form action="" name="main_form" onsubmit="return false;">
+                        <input type="text" class="form-control f_tag" id="tag" name="tag" placeholder="標籤名稱"
+                            autocomplete="off">
+                        <!-- 搜尋列 -->
+                        <div class="s_result">
+                            <!-- 預覽搜尋 -->
+                        </div>
+                    </form>
+                </div>
+                <div class="d-flex pop-tags">
+                    <span style="color: rgba(79, 79, 79, 0.874);">熱門標籤:&nbsp</span>
+
+                </div>
+            </div>
+            <div class="myshare ml-auto mr-3">
+                <h5><a href="javascript:myShare();">我的分享</a></h5>
+            </div>
+        </div>
+        <div id="photos__container">
+            <!-- 放照片 -->
+
+        </div>
+    </div>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+    <script>
+        async function myShare() {
+            const r = await fetch("api/getMember_id.php");
+            const res = await r.json();
+
+
+            if (res['mid'] == 'false') {
+                alert('尚未登入');
+            } else {
+                clearAll(res['mid']);
+            }
+        }
+
+        async function preview_tag() {
+            event.cancelBubble = true;
+
+            const v = document.main_form.tag.value;
+
+            if (v.length < 1) {
+                document.querySelector(".s_result").innerHTML = "";
+                return;
+            }
+
+            const pData = new FormData(document.main_form);
+            const r = await fetch("api/preview-tag-api.php", {
+                method: "POST",
+                body: pData
+            });
+            const obj = await r.json();
+
+            if (obj.length > 0) {
+                const el = document.createElement("div");
+                obj.forEach((v, ind) => {
+                    el.innerHTML += `
+                    <div class="s_col" >
+                       <a href="javascript:searchTag('${v['name']}');">${v['name']}</a>
+                    </div>`;
+                });
+                document.querySelector(".s_result").innerHTML = el.innerHTML;
+            }
+        }
+
+        document.main_form.tag.addEventListener("input", preview_tag);
+
+        window.addEventListener("click", () => {
+
+            if (event.target == document.main_form.tag) return;
+            if (document.querySelector(".s_result")) {
+                document.querySelector(".s_result").innerHTML = "";
+            }
+        });
+
+        async function renderPopTags() {
+            const data = await fetch("api/pop-tags-api.php");
+            const response = await data.json();
+            // 後端tags只排序times
+
+            // render 4個熱門標籤
+            const popTags = document.querySelector(".pop-tags");
+
+            for (let ind in response) {
+                if (ind <= 3) {
+                    popTags.innerHTML += `
+                    <a href="javascript:searchTag('${response[ind]['name']}');" class="mr-1">#${response[ind]['name']}</a>
+                    `;
+                }
+                else {
+                    break;
+                }
+            }
+
+        }
+
+        async function searchTag(tagName) {
+            //讓search-wrap變搜尋結果
+            document.querySelector(".search-wrap").innerHTML = `<span style="font-style:italic">#${tagName}<span>
+                <a style="color:black;" href="share.html">清除搜尋</a>`;
+
+            const jsonData = JSON.stringify({
+                'tagName': tagName,
+            });
+            document.querySelectorAll(".fig-tags").forEach((v) => {
+                // slice1把前面#字去掉
+                if (tagName === v.innerText.slice(1)) {
+                    v.parentNode.parentNode.parentNode.dataset.searchTag = "true";
+                }
+            });
+            document.querySelectorAll(".photo").forEach((v) => {
+
+                if (v.dataset.searchTag != "true") {
+                    v.remove();
+                    cascadeDisplay();
+                }
+            });
+
+        }
+
+        (function getNav() {
+            function checkQuantity() {
+                const cart_quantity = document.querySelector(
+                    "[data-content-before]"
+                );
+                const myHref = window.location.href.replace(
+                    /coffee_project.*/,
+                    "coffee_project/parts/read_quantity_api.php"
+                );
+                fetch(myHref)
+                    .then((data) => data.json())
+                    .then((data) => {
+                        cart_quantity.setAttribute(
+                            "data-content-before",
+                            data.food.length + data.product.length
+                        );
+                    })
+                    .catch(() => {
+                        cart_quantity.setAttribute("data-content-before", 0);
+                    });
+            }
+
+            const el = document.createElement("div");
+            const docBody = document.querySelector("body");
+
+            fetch("../../parts/navbar.php")
+                .then(data => data.text())
+                .then(data => {
+                    el.innerHTML = data;
+                    docBody.insertBefore(el, docBody.childNodes[0]);
+                    checkQuantity();
+                })
+
+        })();
+
+        // NAV
+        let PCBtnOpened = false;
+        const openMenu = () => {
+            document.querySelector(".navinner_pc").classList.add("is-open");
+        };
+        const closeMenu = () => {
+            document.querySelector(".navinner_pc").classList.remove("is-open");
+        };
+        const ShowMyPC = () => {
+            PCBtnOpened = !PCBtnOpened;
+            if (PCBtnOpened) {
+                openMenu();
+            } else {
+                closeMenu();
+            }
+        };
+        // NAV
+
+        function cascadeDisplay() {
+            const gap = 20;
+            const photosContainer = document.getElementById('photos__container');
+            const photos = document.getElementsByClassName('photo');
+
+            const photosContainerWidth = photosContainer.offsetWidth;
+            const photoWidth = 320;
+            // 計算一列最多有幾欄
+            const columnsCount = parseInt((photosContainerWidth) / (photoWidth + gap));
+            const fistRowPhotosHeightArray = [];
+            // 進行照片排序
+            for (let i = 0; i < photos.length; i++) {
+                // 放上第一列的照片
+                if (i < columnsCount) {
+
+                    photos[i].style.top = 0;
+                    photos[i].style.left = (photoWidth + gap) * i + gap / 2 + 'px';
+
+                    // 紀錄第一列的照片高
+                    fistRowPhotosHeightArray.push(photos[i].offsetHeight)
+                } else {
+                    // 放上第二列開始的照片
+                    // 找出第一列的最小高度
+                    let minHeight = Math.min(...fistRowPhotosHeightArray);
+                    // 紀錄最小高度的index，以取得對應到第一列的位置，來決定left要移動多少
+                    let index = fistRowPhotosHeightArray.indexOf(minHeight);
+                    // 調整接續的photo位置，放到目前最小高度的地方
+                    photos[i].style.top = minHeight + gap + 'px';
+                    // 取得對應到第一列photo的left位置
+                    photos[i].style.left = photos[index].offsetLeft + 'px';
+                    // 最後!!再把原本儲存在陣列裡面為最小高度的值，更新上最新的高度(原本的高度+新的高度+間隔)
+                    fistRowPhotosHeightArray[index] = fistRowPhotosHeightArray[index] + photos[i].offsetHeight + gap;
+                }
+            }
+
+        }
+
+        // 畫面一進來
+        function render(rows) {
+            const p_c = document.querySelector("#photos__container");
+            rows.forEach((v, i) => {
+                p_c.innerHTML += `
+                    <div class="photo" onclick="location.href='share-detail.php?pid=${v['sid']}'"  data-mem="${v['member_sid']}" data-post="${v['sid']}">
+                        <img src="uploaded/${v['img_name']}" alt="photo">
+                        <div class="cover"></div>
+                        <i class="fa-solid fa-heart animate__animated"><span class="likes">${v['likes']}</span></i>
+                        <div class="fig-box">
+                            <div class="fig fig-member">${v['member_nickname']}</div>
+                            <div class="fig fig-title">${v['title']}</div>
+                            <div class="tags-box mt-2"><div>
+                        </div>
+                    </div>
+                        `;
+                // 新增文章tags
+                v['tags'].forEach((tagName) => {
+
+                    document.querySelector(`[data-post="${v['sid']}"] .tags-box`).innerHTML += `
+                            <span class="fig-tags">#${tagName}</span>
+                            `;
+                });
+                // render like過了沒
+                getLikes(v['sid']);
+            });
+
+        }
+
+        async function getLikes(p) {
+            const jsonData = JSON.stringify({
+                pid: p,
+                getlike: 'yes',
+            });
+
+            const data = await fetch("api/like-api.php", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: jsonData
+            });
+
+            const response = await data.json();
+            const likesNumber = document.querySelector(`[data-post="${p}"] .fa-heart`);
+
+            if (response['isLog'] == true) {
+                if (response['isLike'] == true) {
+                    likesNumber.classList.add("heart_red");
+                } else {
+                    likesNumber.classList.remove("heart_red");
+                }
+                likesNumber.innerHTML = `<span class="likes">${response['likes']}</span>`;
+            }
+        }
+
+
+        window.onload = async function () {
+            const data = await fetch("api/share-api.php");
+            const rows = await data.json();
+            renderPopTags();
+
+            render(rows);
+
+            document.querySelectorAll(".photo>img")[document.querySelectorAll(".photo>img").length - 1].onload = async function () {
+                await setTimeout(cascadeDisplay, 20);
+                document.querySelector(".wrapper").style.opacity = 1;
+                document.querySelector(".l-wrap").remove();
+            }
+
+
+            document.querySelectorAll(".fig-member").forEach((v) => {
+                v.addEventListener("click", (event) => {
+                    event.stopPropagation();
+                    const s_value = event.target.parentNode.parentNode.dataset.mem;
+                    clearAll(s_value);
+                });
+            });
+
+            document.querySelectorAll(".fa-heart").forEach((v) => {
+                -
+                    v.addEventListener("click", (event) => {
+                        event.stopPropagation();
+                        const p_value = event.target.parentNode.parentNode.dataset.post || event.target.parentNode.dataset.post;
+
+                        like(p_value);
+                    });
+            });
+
+
+        }
+
+        async function like(p) {
+            const jsonData = JSON.stringify({
+                pid: p,
+            });
+
+            const data = await fetch("api/like-api.php", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: jsonData
+            });
+
+            const response = await data.json();
+
+            // render
+            const likesNumber = document.querySelector(`[data-post="${p}"] .fa-heart`);
+            if (response['isLog'] == true) {
+                if (response['isLike'] == true) {
+                    likesNumber.classList.add("heart_red");
+                } else {
+                    likesNumber.classList.remove("heart_red");
+                }
+                likesNumber.innerHTML = `<span class="likes">${response['likes']}</span>`;
+            } else {
+                const cof = confirm('您尚未登入,是否前往登入頁面?');
+
+                if (cof) {
+                    location.href = "../../php/09/login.html";
+                }
+            }
+        }
+
+
+        function clearAll(s_value) {
+
+            document.querySelectorAll(".photo").forEach((v) => {
+                if (v.dataset.mem != s_value) {
+                    v.remove();
+                }
+            });
+            cascadeDisplay();
+        }
+
+
+        // 畫面寬度有變動
+        window.onresize = function () {
+            cascadeDisplay();
+        }
+    </script>
+</body>
+
+</html>
